@@ -26,6 +26,7 @@ def load_data(base_path="../data"):
         user_id: list, is_correct: list}
     """
     train_matrix = load_train_sparse(base_path).toarray()
+    train_data = load_train_csv(base_path)
     valid_data = load_valid_csv(base_path)
     test_data = load_public_test_csv(base_path)
 
@@ -36,7 +37,7 @@ def load_data(base_path="../data"):
     zero_train_matrix = torch.FloatTensor(zero_train_matrix)
     train_matrix = torch.FloatTensor(train_matrix)
 
-    return zero_train_matrix, train_matrix, valid_data, test_data
+    return zero_train_matrix, train_matrix, train_data, valid_data, test_data
 
 
 class AutoEncoder(nn.Module):
@@ -81,7 +82,7 @@ class AutoEncoder(nn.Module):
         return out
 
 
-def train(model, lr, lamb, train_data, zero_train_data, valid_data, num_epoch):
+def train(model, lr, lamb, train_data, zero_train_data, train_data_dict, valid_data, num_epoch):
     """ Train the neural network, where the objective also includes
     a regularizer.
 
@@ -103,6 +104,7 @@ def train(model, lr, lamb, train_data, zero_train_data, valid_data, num_epoch):
     num_student = train_data.shape[0]
 
     validation_accuracies = []
+    train_accuracies = []
 
     for epoch in range(0, num_epoch):
         train_loss = 0.
@@ -131,7 +133,10 @@ def train(model, lr, lamb, train_data, zero_train_data, valid_data, num_epoch):
 
         validation_accuracies.append(valid_acc)
 
-    return validation_accuracies
+        train_acc = evaluate(model, zero_train_data, train_data_dict)
+        train_accuracies.append(train_acc)
+
+    return validation_accuracies, train_accuracies
     #####################################################################
     #                       END OF YOUR CODE                            #
     #####################################################################
@@ -164,51 +169,43 @@ def evaluate(model, train_data, valid_data):
 
 
 def main():
-    zero_train_matrix, train_matrix, valid_data, test_data = load_data()
+    zero_train_matrix, train_matrix, train_data, valid_data, test_data = load_data()
     num_students, num_questions = zero_train_matrix.shape
-    #####################################################################
-    # Try out 5 different k and select the best k using the             #
-    # validation set.                                                   #
-    #####################################################################
+
     # Set model hyperparameters.
     k_values = [10, 50, 100, 200, 500]
     lamb_values = [0.001, 0.01, 0.1, 1]
 
-    # This is purely for graphing
-    num_epoch = 100
+    num_epoch = 40
     epoch_values = [i for i in range(0, num_epoch)]
 
-    # Optimal: k = 100, lambda = 0.001, lr = 1e-2, epoch = 36
+    # Optimal: k = 100, lambda = 0.001, lr = 1e-2
     k_opt = 100
     lamb_opt = 0.001
     lr_opt = 1e-2
-    epoch_opt = 36
 
     model_opt = AutoEncoder(num_questions, k_opt)
-    print("Valid Accuracies for k = ", k_opt, ", lambda = ", lamb_opt, ", Learning Rate:", lr_opt,
-          ", Number of Epochs", epoch_opt)
-    validation_accuracies = train(model_opt, lr_opt, lamb_opt, train_matrix, zero_train_matrix, valid_data, num_epoch)
+    print("Valid Accuracies for k = ", k_opt, ", lambda = ", lamb_opt, ", Learning Rate:", lr_opt)
+    validation_accuracies, train_accuracies = train(model_opt, lr_opt,
+                                                    lamb_opt, train_matrix, zero_train_matrix,
+                                                    train_data, valid_data, num_epoch)
+
+    # Find test accuracy
+    valid_accuracy = evaluate(model_opt, zero_train_matrix, valid_data)
+    print("Valid Accuracy:", valid_accuracy)
+
+    test_accuracy = evaluate(model_opt, zero_train_matrix, test_data)
+    print("Test Accuracy:", test_accuracy)
 
     # Plot validation accuracies for best hyperparameters
     plt.plot(epoch_values, validation_accuracies)
+    plt.plot(epoch_values, train_accuracies)
+    plt.legend(["Validation Accuracies", "Train Accuracies"])
     plt.xlabel("Epoch Number")
-    plt.ylabel("Validation Accuracy")
-    plt.title("Epoch vs Validation Accuracy for Optimal Hyperparameters")
-    plt.savefig("Epoch vs Validation")
+    plt.ylabel("Accuracy")
+    plt.title("Epoch vs Train/Validation Accuracy for k = 100 (no Regularization)")
+    plt.savefig("Epoch vs Train and Validation Accuracy")
     plt.show()
-
-    # Find the optimal hyperparameters
-    # for k in k_values:
-    #     for lamb in lamb_values:
-    #         model = AutoEncoder(num_questions, k)
-    #
-    #         print("Valid Accuracies for k = ", k, ", lambda = ", lamb)
-    #         train(model, lr, lamb, train_matrix, zero_train_matrix, valid_data, num_epoch)
-    #####################################################################
-    #                       END OF YOUR CODE                            #
-    #####################################################################
-
-    # Test commit
 
 
 if __name__ == "__main__":
