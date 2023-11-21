@@ -1,5 +1,6 @@
 from sklearn.impute import KNNImputer
 from utils import *
+import matplotlib.pyplot as plt
 
 
 def knn_impute_by_user(matrix, valid_data, k):
@@ -34,10 +35,12 @@ def knn_impute_by_item(matrix, valid_data, k):
     :return: float
     """
     #####################################################################
-    # TODO:                                                             #
     # Implement the function as described in the docstring.             #
     #####################################################################
-    acc = None
+    nbrs = KNNImputer(n_neighbors=k)
+    mat = nbrs.fit_transform(matrix.T)
+    acc = sparse_matrix_evaluate(valid_data, mat.T)
+    print("Validation Accuracy: {}".format(acc))
     #####################################################################
     #                       END OF YOUR CODE                            #
     #####################################################################
@@ -55,12 +58,39 @@ def main():
     print(sparse_matrix.shape)
 
     #####################################################################
-    # TODO:                                                             #
     # Compute the validation accuracy for each k. Then pick k* with     #
     # the best performance and report the test accuracy with the        #
     # chosen k*.                                                        #
     #####################################################################
-    pass
+    k_values = [1, 6, 11, 16, 21, 26]
+
+    print("User-based:")
+    accuracies = [knn_impute_by_user(sparse_matrix, val_data, k) for k in k_values]
+    plt.plot(k_values, accuracies)
+    plt.xlabel("k")
+    plt.ylabel("Validation Accuracy")
+    plt.savefig("knn_user.png")
+    plt.show()
+
+    index = accuracies.index(max(accuracies))
+    best_k = k_values[index]
+    print(f"Test Accuracy with k={best_k}: ", knn_impute_by_user(sparse_matrix, test_data, best_k))
+    print()
+
+    print("Item-based:")
+    accuracies = [knn_impute_by_item(sparse_matrix, val_data, k) for k in k_values]
+    plt.plot(k_values, accuracies)
+    plt.xlabel("k")
+    plt.ylabel("Validation Accuracy")
+    plt.savefig("knn_item.png")
+    plt.show()
+
+    index = accuracies.index(max(accuracies))
+    best_k = k_values[index]
+    print(f"Test Accuracy with k={best_k}: ", knn_impute_by_item(sparse_matrix, test_data, best_k))
+    # if question A has the same correct and incorrect answers from other students as question B,
+    # A’s answers from specific students matches that of question B.
+    # curse of dimensionality and high computational/memory cost
     #####################################################################
     #                       END OF YOUR CODE                            #
     #####################################################################
