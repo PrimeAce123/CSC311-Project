@@ -168,6 +168,23 @@ def evaluate(data, theta, beta):
            / len(data["is_correct"])
 
 
+def plot_question_difficulty(theta, beta, question_ids):
+    theta_range = np.linspace(min(theta), max(theta), 100)
+    
+    plt.figure(figsize=(10, 6))
+    
+    for question_id in question_ids:
+        beta_q = beta[question_id]
+        p_correct = sigmoid(theta_range - beta_q)
+        plt.plot(theta_range, p_correct, label=f'Question {question_id + 1}')
+
+    plt.title('Probability of Correct Response for Different Questions')
+    plt.xlabel('Student Ability (Theta)')
+    plt.ylabel('Probability of Correct Response')
+    plt.legend()
+    plt.savefig("question_difficulty.png")
+
+
 def main():
     train_data = load_train_csv("../data")
     # You may optionally use the sparse matrix.
@@ -182,8 +199,8 @@ def main():
     #####################################################################
 
     # tunning
-    lr = 0.01
-    iterations = 10
+    lr = 0.02
+    iterations = 100
 
     theta, beta, val_acc_lst = irt(train_data, val_data, lr, iterations)
 
@@ -193,6 +210,9 @@ def main():
     print("Validation accuracy: {}".format(val_accuracy))
     print("Test accuracy: {}".format(test_accuracy))
 
+    # Validation accuracy: 0.7056167090036692
+    # Test accuracy: 0.7090036692068868
+
     #####################################################################
     #                       END OF YOUR CODE                            #
     #####################################################################
@@ -201,7 +221,8 @@ def main():
     # TODO:                                                             #
     # Implement part (d)                                                #
 
-
+    question_ids_to_plot = [0, 1, 2]
+    plot_question_difficulty(theta, beta, question_ids_to_plot)
 
     #####################################################################
     pass
