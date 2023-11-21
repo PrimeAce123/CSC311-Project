@@ -174,18 +174,20 @@ def main():
     k_values = [10, 50, 100, 200, 500]
     lamb_values = [0.001, 0.01, 0.1, 1]
 
-    # Set optimization hyperparameters.
-    lr = 1e-2
-    num_epoch = 100  # This is only for graphing purposes, the actual best epoch number to stop at is around 50
+    # This is purely for graphing
+    num_epoch = 100
+    epoch_values = [i for i in range(0, num_epoch)]
 
-    # Optimal: k = 100, lambda = 0.001
-    epoch_values = [i for i in range(1, num_epoch + 1)]
+    # Optimal: k = 100, lambda = 0.001, lr = 1e-2, epoch = 36
     k_opt = 100
     lamb_opt = 0.001
+    lr_opt = 1e-2
+    epoch_opt = 36
 
     model_opt = AutoEncoder(num_questions, k_opt)
-    print("Valid Accuracies for k = ", k_opt, ", lambda = ", lamb_opt)
-    validation_accuracies = train(model_opt, lr, lamb_opt, train_matrix, zero_train_matrix, valid_data, num_epoch)
+    print("Valid Accuracies for k = ", k_opt, ", lambda = ", lamb_opt, ", Learning Rate:", lr_opt,
+          ", Number of Epochs", epoch_opt)
+    validation_accuracies = train(model_opt, lr_opt, lamb_opt, train_matrix, zero_train_matrix, valid_data, num_epoch)
 
     # Plot validation accuracies for best hyperparameters
     plt.plot(epoch_values, validation_accuracies)
