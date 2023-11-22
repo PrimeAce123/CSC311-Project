@@ -74,7 +74,7 @@ def main():
 
     index = accuracies.index(max(accuracies))
     best_k = k_values[index]
-    print(f"Test Accuracy with k={best_k}: ", knn_impute_by_user(sparse_matrix, test_data, best_k))
+    print(f"Test Accuracy with k*={best_k}:", knn_impute_by_user(sparse_matrix, test_data, best_k))
     print()
 
     print("Item-based:")
@@ -87,10 +87,7 @@ def main():
 
     index = accuracies.index(max(accuracies))
     best_k = k_values[index]
-    print(f"Test Accuracy with k={best_k}: ", knn_impute_by_item(sparse_matrix, test_data, best_k))
-    # if question A has the same correct and incorrect answers from other students as question B,
-    # A’s answers from specific students matches that of question B.
-    # curse of dimensionality and high computational/memory cost
+    print(f"Test Accuracy with k*={best_k}:", knn_impute_by_item(sparse_matrix, test_data, best_k))
     #####################################################################
     #                       END OF YOUR CODE                            #
     #####################################################################
