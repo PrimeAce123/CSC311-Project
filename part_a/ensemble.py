@@ -1,4 +1,3 @@
-# TODO: complete this file.
 from utils import *
 from item_response import sigmoid, update_theta_beta
 from neural_network import AutoEncoder
@@ -12,7 +11,7 @@ from torch.autograd import Variable
 import torch.optim as optim
 
 
-def resample(data, indices=None):
+def resample(data):
     """Resample the dataset with replacement."""
     N = len(data['user_id'])
     bootstrap = {'user_id': [], 'question_id': [], 'is_correct': []}
