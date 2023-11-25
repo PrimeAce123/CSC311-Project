@@ -73,8 +73,8 @@ def main():
     plt.show()
 
     index = accuracies.index(max(accuracies))
-    best_k = k_values[index]
-    print(f"Test Accuracy with k*={best_k}:", knn_impute_by_user(sparse_matrix, test_data, best_k))
+    k_opt = k_values[index]
+    print(f"Test Accuracy with k*={k_opt}:", knn_impute_by_user(sparse_matrix, test_data, k_opt))
     print()
 
     print("Item-based:")
@@ -86,8 +86,8 @@ def main():
     plt.show()
 
     index = accuracies.index(max(accuracies))
-    best_k = k_values[index]
-    print(f"Test Accuracy with k*={best_k}:", knn_impute_by_item(sparse_matrix, test_data, best_k))
+    k_opt = k_values[index]
+    print(f"Test Accuracy with k*={k_opt}:", knn_impute_by_item(sparse_matrix, test_data, k_opt))
     #####################################################################
     #                       END OF YOUR CODE                            #
     #####################################################################

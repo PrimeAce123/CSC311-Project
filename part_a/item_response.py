@@ -23,7 +23,6 @@ def neg_log_likelihood(data, theta, beta):
     :return: float
     """
     #####################################################################
-    # TODO:                                                             #
     # Implement the function as described in the docstring.             #
     #####################################################################
     log_lklihood = 0
@@ -65,7 +64,6 @@ def update_theta_beta(data, lr, theta, beta):
     :return: tuple of vectors
     """
     #####################################################################
-    # TODO:                                                             #
     # Implement the function as described in the docstring.             #
     #####################################################################
     theta_grad = np.zeros_like(theta)
@@ -107,8 +105,6 @@ def irt(data, val_data, lr, iterations):
     :param iterations: int
     :return: (theta, beta, val_acc_lst)
     """
-    # TODO: Initialize theta and beta.
-
     N = len(set(data["user_id"]))
     M = len(set(data["question_id"]))
 
@@ -131,9 +127,6 @@ def irt(data, val_data, lr, iterations):
         val_lld_list.append(-neg_lld_val)
 
         theta, beta = update_theta_beta(data, lr, theta, beta)
-
-
-    # TODO: You may change the return values to achieve what you want.
 
     # plot validation and training log-likelihood
     plt.figure(figsize=(10, 6))
@@ -193,7 +186,6 @@ def main():
     test_data = load_public_test_csv("../data")
 
     #####################################################################
-    # TODO:                                                             #
     # Tune learning rate and number of iterations. With the implemented #
     # code, report the validation and test accuracy.                    #
     #####################################################################
@@ -218,7 +210,6 @@ def main():
     #####################################################################
 
     #####################################################################
-    # TODO:                                                             #
     # Implement part (d)                                                #
 
     question_ids_to_plot = [0, 1, 2]
