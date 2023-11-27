@@ -1,4 +1,6 @@
-from part_a.utils import *
+# from starter_code.part_a.utils import *
+
+import part_a.utils
 
 
 def main():
@@ -10,7 +12,7 @@ def main():
     :return: None
     """
     # Load the train data.
-    train_data = load_train_csv("data")
+    train_data = part_a.utils.load_train_csv("data")
 
     correct_question_map = {}
     total_question_map = {}
@@ -27,7 +29,7 @@ def main():
             total_question_map[q] = 1
 
     # Load the validation data.
-    valid_data = load_valid_csv("data")
+    valid_data = part_a.utils.load_valid_csv("data")
     predictions = []
     for i, q in enumerate(valid_data["question_id"]):
         ratio = correct_question_map[q] / float(total_question_map[q])
@@ -38,11 +40,11 @@ def main():
         else:
             predictions.append(0.)
     # Evaluate your model using the new prediction.
-    acc = evaluate(valid_data, predictions)
+    acc = part_a.utils.evaluate(valid_data, predictions)
     print("Validation Accuracy: {}".format(acc))
 
     # Load the public test data.
-    test_data = load_public_test_csv("data")
+    test_data = part_a.utils.load_public_test_csv("data")
     predictions = []
     for i, q in enumerate(test_data["question_id"]):
         ratio = correct_question_map[q] / float(total_question_map[q])
@@ -50,11 +52,11 @@ def main():
             predictions.append(1.)
         else:
             predictions.append(0.)
-    acc = evaluate(test_data, predictions)
+    acc = part_a.utils.evaluate(test_data, predictions)
     print("Test Accuracy: {}".format(acc))
 
     # Load the private test dataset.
-    private_test = load_private_test_csv("data")
+    private_test = part_a.utils.load_private_test_csv("data")
     predictions = []
     for i, q in enumerate(private_test["question_id"]):
         ratio = correct_question_map[q] / float(total_question_map[q])
@@ -64,7 +66,7 @@ def main():
             predictions.append(0.)
     private_test["is_correct"] = predictions
     # Save your predictions to make it ready to submit to Kaggle.
-    save_private_test_csv(private_test)
+    part_a.utils.save_private_test_csv(private_test)
     return
 
 
