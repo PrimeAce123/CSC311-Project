@@ -42,8 +42,7 @@ def knn_predict(matrix, data, k):
     """Return predictions made on data using knn impute by user."""
     nbrs = KNNImputer(n_neighbors=k)
     mat = nbrs.fit_transform(matrix)
-    predictions = mat[data['user_id'], data['question_id']]
-    return predictions.tolist()
+    return sparse_matrix_predictions(data, mat)
 
 
 def irt_train(data, lr, iterations):
@@ -62,14 +61,15 @@ def irt_train(data, lr, iterations):
 
 def irt_predict(data, theta, beta):
     """Return predictions made on data using irt."""
-    predictions = []
+    pred = []
 
     for i, q in enumerate(data["question_id"]):
         u = data["user_id"][i]
         x = (theta[u] - beta[q]).sum()
-        predictions.append(sigmoid(x))
+        p_a = sigmoid(x)
+        pred.append(p_a >= 0.5)
 
-    return predictions
+    return pred
 
 
 def nn_matrices(data):
@@ -120,7 +120,7 @@ def nn_predict(model, zero_matrix, data):
         inputs = Variable(zero_matrix[u]).unsqueeze(0)
         output = model(inputs)
 
-        pred = output[0][data["question_id"][i]].item()
+        pred = output[0][data["question_id"][i]].item() >= 0.5
         predictions.append(pred)
 
     return predictions
