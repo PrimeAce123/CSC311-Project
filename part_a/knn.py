@@ -4,7 +4,6 @@ from sklearn import metrics
 from utils import *
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
-from sklearn.metrics import pairwise_distances
 
 
 class MatrixCompletion:
@@ -19,14 +18,14 @@ class MatrixCompletion:
 
     def fit(self, train):
         self.num_user, self.num_question = train.shape
-        self.user_factors = np.random.random((self.num_user, self.rank))
-        self.item_factors = np.random.random((self.num_question, self.rank))
+        self.user_factors = np.random.random((self.rank, self.num_user))
+        self.item_factors = np.random.random((self.rank, self.num_question))
 
         self.train_record = []
 
         for _ in range(self.num_iter):
-            self.user_factors = self.step(train, self.user_factors, self.item_factors)
-            self.item_factors = self.step(train.transpose(), self.item_factors, self.user_factors)
+            self.user_factors = self.step(train.transpose(), self.user_factors, self.item_factors)
+            self.item_factors = self.step(train, self.item_factors, self.user_factors)
             predictions = self.predict()
             train_error = self.compute_error(train, predictions)
             self.train_record.append(train_error)
@@ -34,18 +33,16 @@ class MatrixCompletion:
         return self
 
     def step(self, train, unfixed_var, fixed_var):
-        A = fixed_var.transpose().dot(fixed_var)
-        A_inv = np.linalg.inv(A)
-        b = train.dot(fixed_var)
-        unfixed_var = b.dot(A_inv)
+        term_1 = fixed_var.dot(fixed_var.transpose())
+        term_1_inverse = np.linalg.inv(term_1)
+        term_2 = term_1_inverse.dot(fixed_var)
+        final = term_2.dot(train)
 
-        return unfixed_var
-
+        return final
 
     def predict(self):
-        predictions = self.user_factors.dot(self.item_factors.transpose())
+        predictions = self.user_factors.transpose().dot(self.item_factors)
         return predictions
-
 
     def compute_error(self, train, predictions):
         mask = np.nonzero(train)
@@ -120,13 +117,16 @@ def knn_impute_by_item_roc(matrix, valid_data, k):
     return acc, true_labels, predict_labels
 
 
-def plot_learning_curve(model):
+def plot_learning_curve(train_record, rank):
+    fig = plt.figure()
+    plt.figure().clear()
     linewidth = 3
-    plt.plot(model.train_record, label='Train', linewidth=linewidth)
+    iterations = [i for i in range(1, 101)]
+    plt.plot(iterations, train_record)
     plt.xlabel("Iterations")
     plt.ylabel("Mean Squared Error")
-    plt.legend(loc='best')
-    plt.savefig("Matrix_Completion")
+    plt.title("Training Error with Rank=" + str(rank))
+    plt.savefig("Matrix_Completion with Rank=" + str(rank))
 
 
 def main():
@@ -134,23 +134,48 @@ def main():
     val_data = load_valid_csv("../data")
     test_data = load_public_test_csv("../data")
 
+    # Preprocess sparse matrix
     zero_train_matrix = sparse_matrix.copy()
     zero_train_matrix[np.isnan(sparse_matrix)] = 0
+    zero_train_matrix[sparse_matrix == 0] = -1
 
-    matrix_complete = MatrixCompletion(num_iter=100, rank=300)
-    matrix_complete.fit(zero_train_matrix)
-    plot_learning_curve(matrix_complete)
+    rank_values = [5, 10, 20, 50, 100, 200, 300, 400, 500]
+    num_iter = 100
 
-    reconstruct_matrix = matrix_complete.user_factors.dot(matrix_complete.item_factors.transpose())
-    print(reconstruct_matrix.shape)
+    matrixcomp_val_accuracies = []
 
-    print(reconstruct_matrix)
+    for rank in rank_values:
+        model = MatrixCompletion(num_iter=num_iter, rank=rank)
+        model.fit(zero_train_matrix)
+        plot_learning_curve(model.train_record, rank)
 
-    acc = sparse_matrix_evaluate(val_data, reconstruct_matrix)
-    print("Accuracy:", acc)
+        reconstructed_matrix = model.user_factors.transpose().dot(model.item_factors)
 
-    acc_test = sparse_matrix_evaluate(test_data, reconstruct_matrix)
-    print("Accuracy", acc_test)
+        val_acc = sparse_matrix_evaluate(val_data, reconstructed_matrix, 0)
+
+        matrixcomp_val_accuracies.append(val_acc)
+
+    # print(matrixcomp_val_accuracies)
+
+    fig = plt.figure()
+    plt.figure().clear()
+    plt.plot(rank_values, matrixcomp_val_accuracies)
+    plt.xlabel("Rank")
+    plt.ylabel("Validation Accuracy")
+    plt.title("Validation Accuracy vs Rank Value")
+    plt.savefig("Validation vs Rank")
+
+    index_max = matrixcomp_val_accuracies.index(max(matrixcomp_val_accuracies))
+    rank_opt = rank_values[index_max]
+
+    print("Rank Optimal:", rank_opt)
+
+    model_opt = MatrixCompletion(num_iter=100, rank=rank_opt)
+    model_opt.fit(zero_train_matrix)
+    opt_reconstruct_matrix = model_opt.user_factors.transpose().dot(model_opt.item_factors)
+
+    test_acc = sparse_matrix_evaluate(test_data, opt_reconstruct_matrix, 0)
+    print("Test Accuracy with optimal rank", test_acc)
 
     '''
     #####################################################################
