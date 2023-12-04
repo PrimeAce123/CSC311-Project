@@ -5,6 +5,8 @@ from utils import *
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 
+np.random.seed(9564)
+
 
 class MatrixCompletion:
     def __init__(self, num_iter, rank):
@@ -133,6 +135,28 @@ def main():
     sparse_matrix = load_train_sparse("../data").toarray()
     val_data = load_valid_csv("../data")
     test_data = load_public_test_csv("../data")
+
+    question_data = load_question_meta("../data")
+
+    topics = question_data["topics"]
+    print(topics[0].strip('][').split(', '))
+
+    record = [0 for _ in range(389)]
+
+    for topic in topics:
+        topic_strip = topic.strip('][').split(', ')
+        for subject in topic_strip:
+            record[int(subject)] += 1
+
+    indices = []
+
+    for _ in range(5):
+        index_max = record.index(max(record))
+        indices.append(index_max)
+
+        record[index_max] = -1
+
+    print(indices)
 
     # Preprocess sparse matrix
     zero_train_matrix = sparse_matrix.copy()

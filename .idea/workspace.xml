@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1c9528c1-1b33-4757-8c67-df5c33656443" name="Changes" comment="Added matrix completion">
+    <list default="true" id="1c9528c1-1b33-4757-8c67-df5c33656443" name="Changes" comment="Completed Matrix Completion with desired accuracy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/part_a/knn.py" beforeDir="false" afterPath="$PROJECT_DIR$/part_a/knn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/part_a/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/part_a/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701571708041</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Completed Matrix Completion with desired accuracy">
+      <option name="closed" value="true" />
+      <created>1701635548412</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1701635548412</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -189,6 +198,7 @@
     <MESSAGE value="Added train accuracy to the plot" />
     <MESSAGE value="Fixed majority vote" />
     <MESSAGE value="Added matrix completion" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added matrix completion" />
+    <MESSAGE value="Completed Matrix Completion with desired accuracy" />
+    <option name="LAST_COMMIT_MESSAGE" value="Completed Matrix Completion with desired accuracy" />
   </component>
 </project>
