@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1c9528c1-1b33-4757-8c67-df5c33656443" name="Changes" comment="Completed Matrix Completion with desired accuracy">
+    <list default="true" id="1c9528c1-1b33-4757-8c67-df5c33656443" name="Changes" comment="Added analysis part">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/part_a/knn.py" beforeDir="false" afterPath="$PROJECT_DIR$/part_a/knn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/part_a/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/part_a/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701635548412</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added analysis part">
+      <option name="closed" value="true" />
+      <created>1701665246340</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1701665246340</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -199,6 +206,7 @@
     <MESSAGE value="Fixed majority vote" />
     <MESSAGE value="Added matrix completion" />
     <MESSAGE value="Completed Matrix Completion with desired accuracy" />
-    <option name="LAST_COMMIT_MESSAGE" value="Completed Matrix Completion with desired accuracy" />
+    <MESSAGE value="Added analysis part" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added analysis part" />
   </component>
 </project>

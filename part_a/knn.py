@@ -136,6 +136,7 @@ def main():
     val_data = load_valid_csv("../data")
     test_data = load_public_test_csv("../data")
 
+    '''
     question_data = load_question_meta("../data")
 
     topics = question_data["topics"]
@@ -157,6 +158,7 @@ def main():
         record[index_max] = -1
 
     print(indices)
+    '''
 
     # Preprocess sparse matrix
     zero_train_matrix = sparse_matrix.copy()
@@ -168,6 +170,7 @@ def main():
 
     matrixcomp_val_accuracies = []
 
+    # Train the 9 models
     for rank in rank_values:
         model = MatrixCompletion(num_iter=num_iter, rank=rank)
         model.fit(zero_train_matrix)
@@ -179,8 +182,7 @@ def main():
 
         matrixcomp_val_accuracies.append(val_acc)
 
-    # print(matrixcomp_val_accuracies)
-
+    # Plot Validation accuracies
     fig = plt.figure()
     plt.figure().clear()
     plt.plot(rank_values, matrixcomp_val_accuracies)
@@ -189,11 +191,13 @@ def main():
     plt.title("Validation Accuracy vs Rank Value")
     plt.savefig("Validation vs Rank")
 
+    # Find the optimal value for rank
     index_max = matrixcomp_val_accuracies.index(max(matrixcomp_val_accuracies))
     rank_opt = rank_values[index_max]
 
     print("Rank Optimal:", rank_opt)
 
+    # Get test accuracy
     model_opt = MatrixCompletion(num_iter=100, rank=rank_opt)
     model_opt.fit(zero_train_matrix)
     opt_reconstruct_matrix = model_opt.user_factors.transpose().dot(model_opt.item_factors)
@@ -233,10 +237,7 @@ def main():
     index = accuracies.index(max(accuracies))
     k_opt = k_values[index]
     print(f"Test Accuracy with k*={k_opt}:", knn_impute_by_item(sparse_matrix, test_data, k_opt))
-    '''
 
-
-    '''
     accuracy, true_labels, predict_labels = knn_impute_by_item_roc(sparse_matrix, val_data, 21)
     fpr, tpr, _ = metrics.roc_curve(true_labels, predict_labels)
     auc = metrics.roc_auc_score(true_labels, predict_labels)
