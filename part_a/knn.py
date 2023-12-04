@@ -5,6 +5,10 @@ from utils import *
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 
+# The code for part B was inspired from the following link
+# http://ethen8181.github.io/machine-learning/recsys/1_ALSWR.html
+
+
 np.random.seed(9564)
 
 
@@ -181,6 +185,8 @@ def main():
         val_acc = sparse_matrix_evaluate(val_data, reconstructed_matrix, 0)
 
         matrixcomp_val_accuracies.append(val_acc)
+
+        print("Model for rank", rank, "complete")
 
     # Plot Validation accuracies
     fig = plt.figure()
