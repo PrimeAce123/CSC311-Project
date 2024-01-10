@@ -10,6 +10,9 @@ import torch
 from torch.autograd import Variable
 import torch.optim as optim
 
+'''
+Test comment
+'''
 
 def resample(data):
     """Resample the dataset with replacement."""
